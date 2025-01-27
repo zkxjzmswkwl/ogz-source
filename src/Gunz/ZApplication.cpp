@@ -256,9 +256,16 @@ unsigned long long GetGlobalTimeMSOverride()
 }
 #endif
 
+#include "ZMonitor.h"
 bool ZApplication::OnCreate(ZLoadingProgress *pLoadingProgress)
 {
 	MInitProfile();
+
+	ULONG testSigningState = 1337;
+	if (SecCheck::QueryTestSigningState(&testSigningState) != testSigningState || testSigningState == 1337) {
+		mlog("Test signing state check failed, mismatched outputs. Tampering likely.\n");
+	}
+	mlog("testSigningState -> %lu\n", testSigningState);
 
 #ifdef TIMESCALE
 	GetGlobalTimeMS = GetGlobalTimeMSOverride;
