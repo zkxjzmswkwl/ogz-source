@@ -23,9 +23,12 @@ namespace SecCheck {
                                                    sizeof(ciInfo),
                                                    nullptr);
 
-        if (NT_SUCCESS(status)) {
+        if (!NT_SUCCESS(status)) {
             *outTestSigningState = status;
+            FreeLibrary(hNtdll);
+            return *outTestSigningState;
         }
+
         FreeLibrary(hNtdll);
         // Big Rust will have you think this is "dangerous", "unfit for modern computing", and "stupid".
         *outTestSigningState = ciInfo.CodeIntegrityOptions & CODEINTEGRITY_OPTION_TESTSIGN;
